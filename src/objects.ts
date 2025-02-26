@@ -82,7 +82,19 @@ export function toShortForm(question: Question): string {
  * Check the unit tests for more examples of what this looks like!
  */
 export function toMarkdown(question: Question): string {
-    return "";
+    let markdown: string = "# " + question.name + "\n" + question.body;
+    if (question.type === "multiple_choice_question") {
+        markdown += "\n";
+        for (let i = 0; i < question.options.length; i++) {
+            markdown +=
+                "- " +
+                question.options[i] +
+                (i === question.options.length - 1 ? "" : "\n");
+        }
+    }
+
+    console.log(markdown);
+    return markdown;
 }
 
 /**
@@ -113,7 +125,11 @@ export function publishQuestion(question: Question): Question {
  * The `published` field should be reset to false.
  */
 export function duplicateQuestion(id: number, oldQuestion: Question): Question {
-    return oldQuestion;
+    let newQuestion: Question = { ...oldQuestion };
+    newQuestion.id = id;
+    newQuestion.name = "Copy of " + oldQuestion.name;
+    newQuestion.published = false;
+    return newQuestion;
 }
 
 /**
@@ -124,7 +140,9 @@ export function duplicateQuestion(id: number, oldQuestion: Question): Question {
  * Check out the subsection about "Nested Fields" for more information.
  */
 export function addOption(question: Question, newOption: string): Question {
-    return question;
+    let newQuestion: Question = { ...question };
+    newQuestion.options = [...question.options, newOption];
+    return newQuestion;
 }
 
 /**
@@ -141,5 +159,10 @@ export function mergeQuestion(
     contentQuestion: Question,
     { points }: { points: number },
 ): Question {
-    return contentQuestion;
+    let newQuestion: Question = { ...contentQuestion };
+    newQuestion.id = id;
+    newQuestion.name = name;
+    newQuestion.points = { points }.points;
+    newQuestion.published = false;
+    return newQuestion;
 }
