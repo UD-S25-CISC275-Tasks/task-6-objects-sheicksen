@@ -8,9 +8,18 @@ import { Question, QuestionType } from "./interfaces/question";
 export function makeBlankQuestion(
     id: number,
     name: string,
-    type: QuestionType
+    type: QuestionType,
 ): Question {
-    return {};
+    return {
+        id: id,
+        name: name,
+        type: type,
+        body: "",
+        expected: "",
+        options: [],
+        points: 1,
+        published: false,
+    };
 }
 
 /**
@@ -21,7 +30,9 @@ export function makeBlankQuestion(
  * HINT: Look up the `trim` and `toLowerCase` functions.
  */
 export function isCorrect(question: Question, answer: string): boolean {
-    return false;
+    return question.expected.toLowerCase() === answer.trim().toLowerCase() ?
+            true
+        :   false;
 }
 
 /**
@@ -31,7 +42,16 @@ export function isCorrect(question: Question, answer: string): boolean {
  * be exactly one of the options.
  */
 export function isValid(question: Question, answer: string): boolean {
-    return false;
+    if (question.type === "short_answer_question") {
+        return true;
+    }
+    let valid: boolean = false;
+    for (let i = 0; i < question.options.length; i++) {
+        if (question.options[i] === answer) {
+            valid = true;
+        }
+    }
+    return valid;
 }
 
 /**
@@ -41,7 +61,7 @@ export function isValid(question: Question, answer: string): boolean {
  * name "My First Question" would become "9: My First Q".
  */
 export function toShortForm(question: Question): string {
-    return "";
+    return question.id.toString() + ": " + question.name.substring(0, 10);
 }
 
 /**
@@ -70,7 +90,9 @@ export function toMarkdown(question: Question): string {
  * `newName`.
  */
 export function renameQuestion(question: Question, newName: string): Question {
-    return question;
+    let newQuestion: Question = { ...question };
+    newQuestion.name = newName;
+    return newQuestion;
 }
 
 /**
@@ -79,7 +101,9 @@ export function renameQuestion(question: Question, newName: string): Question {
  * published; if it was published, now it should be not published.
  */
 export function publishQuestion(question: Question): Question {
-    return question;
+    let newQuestion: Question = { ...question };
+    newQuestion.published = newQuestion.published ? false : true;
+    return newQuestion;
 }
 
 /**
@@ -115,7 +139,7 @@ export function mergeQuestion(
     id: number,
     name: string,
     contentQuestion: Question,
-    { points }: { points: number }
+    { points }: { points: number },
 ): Question {
     return contentQuestion;
 }
